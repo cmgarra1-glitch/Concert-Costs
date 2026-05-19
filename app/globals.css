@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark,
+    synthwave;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@layer components {
+  .page-container {
+    @apply container mx-auto max-w-6xl px-4 py-6 lg:px-6 lg:py-8;
+  }
+
+  .page-section {
+    @apply space-y-6 lg:space-y-8;
+  }
+
+  .app-card {
+    @apply rounded-2xl border border-base-300/60 bg-base-100 shadow-sm;
+  }
+
+  .app-card-hover {
+    @apply transition-all duration-200 hover:border-primary/20 hover:shadow-md;
+  }
+
+  .section-heading {
+    @apply text-sm font-semibold uppercase tracking-wide text-base-content/60;
+  }
+}
