@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { FormField } from "@/components/FormField";
+import { GenreInput } from "@/components/GenreInput";
 import { MoneyInput } from "@/components/MoneyInput";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
@@ -182,39 +183,12 @@ export function ConcertForm({ genreSuggestions = [] }: ConcertFormProps) {
               required
             />
           </FormField>
-          <FormField
-            label="Genre"
-            htmlFor="genre"
-            hint="Type any genre — Rock, Jazz, K-Pop, Metal, etc."
-          >
-            <input
-              id="genre"
-              name="genre"
-              type="text"
-              autoComplete="off"
-              className="input input-bordered input-md w-full"
+          <FormField label="Genre" htmlFor="genre">
+            <GenreInput
               value={form.genre}
-              onChange={(e) => updateField("genre", e.target.value)}
-              placeholder="Type a genre, e.g. Rock"
-              required
+              onChange={(v) => updateField("genre", v)}
+              pastGenres={genreSuggestions}
             />
-            {genreSuggestions.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <span className="w-full text-xs text-base-content/60">
-                  Your genres (tap to fill):
-                </span>
-                {genreSuggestions.map((g) => (
-                  <button
-                    key={g}
-                    type="button"
-                    className="btn btn-xs btn-outline"
-                    onClick={() => updateField("genre", g)}
-                  >
-                    {g}
-                  </button>
-                ))}
-              </div>
-            )}
           </FormField>
           <FormField label="Venue" htmlFor="venue">
             <input

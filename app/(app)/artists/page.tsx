@@ -12,7 +12,7 @@ export default async function ArtistsPage() {
     <div className="page-section">
       <PageHeader
         title="Artists by genre"
-        subtitle="Every artist you have seen, grouped by the genres you log."
+        subtitle="Each genre you type when adding a concert gets its own category here — unlimited genres."
       />
 
       {concerts.length === 0 ? (

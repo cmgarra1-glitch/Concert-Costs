@@ -13,7 +13,7 @@ export default async function AddConcertPage() {
     <>
       <PageHeader
         title="Add Concert"
-        subtitle="Log a show you attended. We will add up your costs and help you compare value across concerts."
+        subtitle="Log a show you attended. Type any genre you want (not just Pop, Country, or Rap) — it will appear on your Artists tab."
       />
       <ConcertForm genreSuggestions={genreSuggestions} />
     </>

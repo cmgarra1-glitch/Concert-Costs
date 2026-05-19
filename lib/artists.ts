@@ -12,6 +12,7 @@ export type GenreGroup = {
   artists: ArtistEntry[];
 };
 
+/** One section per genre you have logged; artists appear in every genre they played */
 export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
   const genreLabels = new Map<string, { label: string; latestDate: string }>();
 
@@ -25,9 +26,9 @@ export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
     }
   }
 
-  const byArtist = new Map<
+  const groups = new Map<
     string,
-    { name: string; genreKey: string; showCount: number; latestDate: string }
+    Map<string, { name: string; showCount: number }>
   >();
 
   for (const concert of concerts) {
@@ -35,41 +36,35 @@ export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
     if (!gKey) continue;
 
     const artistKey = concert.artist.trim().toLowerCase();
-    const existing = byArtist.get(artistKey);
+    if (!artistKey) continue;
 
-    if (!existing) {
-      byArtist.set(artistKey, {
+    if (!groups.has(gKey)) {
+      groups.set(gKey, new Map());
+    }
+
+    const artistsInGenre = groups.get(gKey)!;
+    const existing = artistsInGenre.get(artistKey);
+
+    if (existing) {
+      existing.showCount += 1;
+    } else {
+      artistsInGenre.set(artistKey, {
         name: concert.artist.trim(),
-        genreKey: gKey,
         showCount: 1,
-        latestDate: concert.concert_date,
       });
-      continue;
     }
-
-    existing.showCount += 1;
-    if (concert.concert_date > existing.latestDate) {
-      existing.latestDate = concert.concert_date;
-      existing.genreKey = gKey;
-    }
-  }
-
-  const groups = new Map<string, ArtistEntry[]>();
-
-  for (const { name, genreKey: gKey, showCount } of byArtist.values()) {
-    const list = groups.get(gKey) ?? [];
-    list.push({
-      name,
-      genre: genreLabels.get(gKey)?.label ?? gKey,
-      showCount,
-    });
-    groups.set(gKey, list);
   }
 
   return [...groups.entries()]
-    .map(([key, artists]) => ({
+    .map(([key, artistMap]) => ({
       genre: genreLabels.get(key)?.label ?? key,
-      artists: artists.sort((a, b) => a.name.localeCompare(b.name)),
+      artists: [...artistMap.values()]
+        .map((a) => ({
+          name: a.name,
+          genre: genreLabels.get(key)?.label ?? key,
+          showCount: a.showCount,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
     }))
     .sort((a, b) => a.genre.localeCompare(b.genre));
 }
