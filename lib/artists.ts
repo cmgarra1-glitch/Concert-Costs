@@ -1,28 +1,46 @@
-import { GENRES } from "@/lib/constants";
-import type { Concert, Genre } from "@/lib/types";
+import { genreKey, normalizeGenre } from "@/lib/genre";
+import type { Concert } from "@/lib/types";
 
 export type ArtistEntry = {
   name: string;
-  genre: Genre;
+  genre: string;
   showCount: number;
 };
 
-export type ArtistsByGenre = Record<Genre, ArtistEntry[]>;
+export type GenreGroup = {
+  genre: string;
+  artists: ArtistEntry[];
+};
 
-export function groupArtistsByGenre(concerts: Concert[]): ArtistsByGenre {
+export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
+  const genreLabels = new Map<string, { label: string; latestDate: string }>();
+
+  for (const concert of concerts) {
+    const key = genreKey(concert.genre);
+    if (!key) continue;
+    const label = normalizeGenre(concert.genre);
+    const prev = genreLabels.get(key);
+    if (!prev || concert.concert_date >= prev.latestDate) {
+      genreLabels.set(key, { label, latestDate: concert.concert_date });
+    }
+  }
+
   const byArtist = new Map<
     string,
-    { name: string; genre: Genre; showCount: number; latestDate: string }
+    { name: string; genreKey: string; showCount: number; latestDate: string }
   >();
 
   for (const concert of concerts) {
-    const key = concert.artist.trim().toLowerCase();
-    const existing = byArtist.get(key);
+    const gKey = genreKey(concert.genre);
+    if (!gKey) continue;
+
+    const artistKey = concert.artist.trim().toLowerCase();
+    const existing = byArtist.get(artistKey);
 
     if (!existing) {
-      byArtist.set(key, {
+      byArtist.set(artistKey, {
         name: concert.artist.trim(),
-        genre: concert.genre,
+        genreKey: gKey,
         showCount: 1,
         latestDate: concert.concert_date,
       });
@@ -32,23 +50,26 @@ export function groupArtistsByGenre(concerts: Concert[]): ArtistsByGenre {
     existing.showCount += 1;
     if (concert.concert_date > existing.latestDate) {
       existing.latestDate = concert.concert_date;
-      existing.genre = concert.genre;
+      existing.genreKey = gKey;
     }
   }
 
-  const result: ArtistsByGenre = {
-    Country: [],
-    Rap: [],
-    Pop: [],
-  };
+  const groups = new Map<string, ArtistEntry[]>();
 
-  for (const { name, genre, showCount } of byArtist.values()) {
-    result[genre].push({ name, genre, showCount });
+  for (const { name, genreKey: gKey, showCount } of byArtist.values()) {
+    const list = groups.get(gKey) ?? [];
+    list.push({
+      name,
+      genre: genreLabels.get(gKey)?.label ?? gKey,
+      showCount,
+    });
+    groups.set(gKey, list);
   }
 
-  for (const g of GENRES) {
-    result[g].sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  return result;
+  return [...groups.entries()]
+    .map(([key, artists]) => ({
+      genre: genreLabels.get(key)?.label ?? key,
+      artists: artists.sort((a, b) => a.name.localeCompare(b.name)),
+    }))
+    .sort((a, b) => a.genre.localeCompare(b.genre));
 }

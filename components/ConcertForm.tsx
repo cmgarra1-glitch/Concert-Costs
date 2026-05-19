@@ -9,15 +9,15 @@ import { MoneyInput } from "@/components/MoneyInput";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { getTotalCost } from "@/lib/calculations";
-import { COST_CATEGORIES, GENRES } from "@/lib/constants";
-import type { Genre } from "@/lib/types";
+import { COST_CATEGORIES } from "@/lib/constants";
+import { normalizeGenre } from "@/lib/genre";
 import { friendlyError } from "@/lib/userMessages";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const emptyForm = {
   concert_name: "",
   artist: "",
-  genre: "Pop" as Genre,
+  genre: "",
   venue: "",
   city: "",
   state: "",
@@ -59,7 +59,11 @@ function TotalBadge({ total }: { total: number }) {
   );
 }
 
-export function ConcertForm() {
+type ConcertFormProps = {
+  genreSuggestions?: string[];
+};
+
+export function ConcertForm({ genreSuggestions = [] }: ConcertFormProps) {
   const router = useRouter();
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
@@ -94,6 +98,12 @@ export function ConcertForm() {
       return;
     }
 
+    const genre = normalizeGenre(form.genre);
+    if (!genre) {
+      setError("Please enter a genre (e.g. Rock, Jazz, Country, EDM).");
+      return;
+    }
+
     setLoading(true);
     const supabase = createClient();
     const {
@@ -110,7 +120,7 @@ export function ConcertForm() {
       user_id: user.id,
       concert_name: form.concert_name.trim(),
       artist: form.artist.trim(),
-      genre: form.genre,
+      genre,
       venue: form.venue.trim(),
       city: form.city.trim(),
       state: form.state.trim(),
@@ -172,20 +182,20 @@ export function ConcertForm() {
               required
             />
           </FormField>
-          <FormField label="Genre" htmlFor="genre">
-            <select
+          <FormField
+            label="Genre"
+            htmlFor="genre"
+            hint="Any style — Rock, Jazz, Country, Hip-Hop, EDM, etc."
+          >
+            <input
               id="genre"
-              className="select select-bordered select-md w-full"
+              className="input input-bordered input-md w-full"
               value={form.genre}
               onChange={(e) => updateField("genre", e.target.value)}
+              placeholder="e.g. Rock"
+              list="genre-suggestions"
               required
-            >
-              {GENRES.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
+            />
           </FormField>
           <FormField label="Venue" htmlFor="venue">
             <input
@@ -312,6 +322,14 @@ export function ConcertForm() {
         >
           {loading ? "Saving..." : "Save concert"}
         </button>
+
+        {genreSuggestions.length > 0 && (
+          <datalist id="genre-suggestions">
+            {genreSuggestions.map((g) => (
+              <option key={g} value={g} />
+            ))}
+          </datalist>
+        )}
       </form>
 
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-base-300 bg-base-100/95 px-4 py-3 shadow-lg backdrop-blur sm:hidden">
