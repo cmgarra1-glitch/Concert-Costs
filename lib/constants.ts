@@ -1,3 +1,7 @@
+import type { Genre } from "@/lib/types";
+
+export const GENRES: Genre[] = ["Country", "Rap", "Pop"];
+
 export const DAISY_THEMES = ["light", "dark", "synthwave"] as const;
 
 export type DaisyTheme = (typeof DAISY_THEMES)[number];

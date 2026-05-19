@@ -1,8 +1,11 @@
+export type Genre = "Country" | "Rap" | "Pop";
+
 export type Concert = {
   id: string;
   user_id: string;
   concert_name: string;
   artist: string;
+  genre: Genre;
   venue: string;
   city: string;
   state: string;

@@ -29,7 +29,12 @@ export function ConcertCard({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold">{concert.concert_name}</h2>
-          <p className="text-base-content/80">{concert.artist}</p>
+          <p className="text-base-content/80">
+            {concert.artist}
+            <span className="badge badge-ghost badge-sm ml-2 align-middle">
+              {concert.genre}
+            </span>
+          </p>
           <p className="mt-1 flex items-center gap-1 text-sm text-base-content/70">
             <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
             {concert.venue} · {concert.city}, {concert.state}

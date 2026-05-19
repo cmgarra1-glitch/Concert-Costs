@@ -2,12 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ListMusic, PlusCircle } from "lucide-react";
+import {
+  Calculator,
+  LayoutDashboard,
+  ListMusic,
+  Map,
+  Mic2,
+  PlusCircle,
+} from "lucide-react";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ThemeSelector } from "@/components/ThemeSelector";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/map", label: "Map", icon: Map },
+  { href: "/artists", label: "Artists", icon: Mic2 },
+  { href: "/budget", label: "Budget", icon: Calculator },
   { href: "/add-concert", label: "Add", icon: PlusCircle },
   { href: "/concerts", label: "Concerts", icon: ListMusic },
 ];

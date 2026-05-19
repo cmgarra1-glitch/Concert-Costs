@@ -9,13 +9,15 @@ import { MoneyInput } from "@/components/MoneyInput";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { getTotalCost } from "@/lib/calculations";
-import { COST_CATEGORIES } from "@/lib/constants";
+import { COST_CATEGORIES, GENRES } from "@/lib/constants";
+import type { Genre } from "@/lib/types";
 import { friendlyError } from "@/lib/userMessages";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const emptyForm = {
   concert_name: "",
   artist: "",
+  genre: "Pop" as Genre,
   venue: "",
   city: "",
   state: "",
@@ -108,6 +110,7 @@ export function ConcertForm() {
       user_id: user.id,
       concert_name: form.concert_name.trim(),
       artist: form.artist.trim(),
+      genre: form.genre,
       venue: form.venue.trim(),
       city: form.city.trim(),
       state: form.state.trim(),
@@ -168,6 +171,21 @@ export function ConcertForm() {
               onChange={(e) => updateField("artist", e.target.value)}
               required
             />
+          </FormField>
+          <FormField label="Genre" htmlFor="genre">
+            <select
+              id="genre"
+              className="select select-bordered select-md w-full"
+              value={form.genre}
+              onChange={(e) => updateField("genre", e.target.value)}
+              required
+            >
+              {GENRES.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
           </FormField>
           <FormField label="Venue" htmlFor="venue">
             <input

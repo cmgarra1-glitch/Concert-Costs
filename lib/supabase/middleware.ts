@@ -1,7 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED_PATHS = ["/dashboard", "/add-concert", "/concerts"];
+const PROTECTED_PATHS = [
+  "/dashboard",
+  "/map",
+  "/artists",
+  "/budget",
+  "/add-concert",
+  "/concerts",
+];
 
 function isEnvConfigured() {
   return Boolean(
