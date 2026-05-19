@@ -6,8 +6,8 @@ import {
   Calculator,
   LayoutDashboard,
   ListMusic,
-  Map,
   Mic2,
+  Sparkles,
   PlusCircle,
 } from "lucide-react";
 import { LogoutButton } from "@/components/LogoutButton";
@@ -15,7 +15,7 @@ import { ThemeSelector } from "@/components/ThemeSelector";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/map", label: "Map", icon: Map },
+  { href: "/wrapped", label: "Wrapped", icon: Sparkles },
   { href: "/artists", label: "Artists", icon: Mic2 },
   { href: "/budget", label: "Budget", icon: Calculator },
   { href: "/add-concert", label: "Add", icon: PlusCircle },

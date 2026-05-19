@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const PROTECTED_PATHS = [
   "/dashboard",
-  "/map",
+  "/wrapped",
   "/artists",
   "/budget",
   "/add-concert",
