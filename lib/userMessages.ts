@@ -19,6 +19,9 @@ export function friendlyError(message: string): string {
   if (lower.includes("jwt") || lower.includes("session")) {
     return "Your session expired. Please log in again.";
   }
+  if (lower.includes("concerts_genre_check") || lower.includes("genre")) {
+    return "That genre could not be saved. Try again — any text like Rock or Jazz should work.";
+  }
 
   return message;
 }

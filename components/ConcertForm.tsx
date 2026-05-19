@@ -185,17 +185,36 @@ export function ConcertForm({ genreSuggestions = [] }: ConcertFormProps) {
           <FormField
             label="Genre"
             htmlFor="genre"
-            hint="Any style — Rock, Jazz, Country, Hip-Hop, EDM, etc."
+            hint="Type any genre — Rock, Jazz, K-Pop, Metal, etc."
           >
             <input
               id="genre"
+              name="genre"
+              type="text"
+              autoComplete="off"
               className="input input-bordered input-md w-full"
               value={form.genre}
               onChange={(e) => updateField("genre", e.target.value)}
-              placeholder="e.g. Rock"
-              list="genre-suggestions"
+              placeholder="Type a genre, e.g. Rock"
               required
             />
+            {genreSuggestions.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="w-full text-xs text-base-content/60">
+                  Your genres (tap to fill):
+                </span>
+                {genreSuggestions.map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    className="btn btn-xs btn-outline"
+                    onClick={() => updateField("genre", g)}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+            )}
           </FormField>
           <FormField label="Venue" htmlFor="venue">
             <input
@@ -323,13 +342,6 @@ export function ConcertForm({ genreSuggestions = [] }: ConcertFormProps) {
           {loading ? "Saving..." : "Save concert"}
         </button>
 
-        {genreSuggestions.length > 0 && (
-          <datalist id="genre-suggestions">
-            {genreSuggestions.map((g) => (
-              <option key={g} value={g} />
-            ))}
-          </datalist>
-        )}
       </form>
 
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-base-300 bg-base-100/95 px-4 py-3 shadow-lg backdrop-blur sm:hidden">

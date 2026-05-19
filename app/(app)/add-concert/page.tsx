@@ -5,7 +5,9 @@ import { getDistinctGenres } from "@/lib/genre";
 
 export default async function AddConcertPage() {
   const concerts = await getUserConcerts();
-  const genreSuggestions = getDistinctGenres(concerts.map((c) => c.genre));
+  const genreSuggestions = getDistinctGenres(
+    concerts.map((c) => c.genre ?? ""),
+  );
 
   return (
     <>

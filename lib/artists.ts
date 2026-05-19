@@ -16,7 +16,7 @@ export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
   const genreLabels = new Map<string, { label: string; latestDate: string }>();
 
   for (const concert of concerts) {
-    const key = genreKey(concert.genre);
+    const key = genreKey(concert.genre ?? "");
     if (!key) continue;
     const label = normalizeGenre(concert.genre);
     const prev = genreLabels.get(key);
@@ -31,7 +31,7 @@ export function groupArtistsByGenre(concerts: Concert[]): GenreGroup[] {
   >();
 
   for (const concert of concerts) {
-    const gKey = genreKey(concert.genre);
+    const gKey = genreKey(concert.genre ?? "");
     if (!gKey) continue;
 
     const artistKey = concert.artist.trim().toLowerCase();
